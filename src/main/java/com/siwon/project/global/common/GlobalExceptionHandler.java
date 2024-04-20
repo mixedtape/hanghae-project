@@ -1,7 +1,5 @@
 package com.siwon.project.global.common;
 
-import com.HHive.hhive.global.exception.jwt.ExpiredJwtTokenException;
-import com.HHive.hhive.global.exception.jwt.InvalidJwtTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
