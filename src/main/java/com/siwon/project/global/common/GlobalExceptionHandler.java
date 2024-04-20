@@ -1,6 +1,7 @@
 package com.siwon.project.global.common;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -33,7 +34,7 @@ public class GlobalExceptionHandler {
         return bindingResult.getAllErrors()
                 .stream()
                 .findFirst()
-                .map(error -> error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .orElse("Validation failed");
     }
 }
