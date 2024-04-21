@@ -1,8 +1,7 @@
-package com.siwon.project.global.common;
+package com.siwon.project.global.exception.common;
 
-import com.HHive.hhive.global.exception.jwt.ExpiredJwtTokenException;
-import com.HHive.hhive.global.exception.jwt.InvalidJwtTokenException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -35,7 +34,7 @@ public class GlobalExceptionHandler {
         return bindingResult.getAllErrors()
                 .stream()
                 .findFirst()
-                .map(error -> error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .orElse("Validation failed");
     }
 }
