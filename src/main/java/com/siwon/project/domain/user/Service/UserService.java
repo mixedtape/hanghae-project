@@ -1,6 +1,7 @@
 package com.siwon.project.domain.user.Service;
 
 import com.siwon.project.domain.user.dto.UserInfoResponseDTO;
+import com.siwon.project.domain.user.dto.UserLoginRequestDTO;
 import com.siwon.project.domain.user.dto.UserSignupRequestDTO;
 import com.siwon.project.domain.user.entity.User;
 import com.siwon.project.domain.user.repository.UserRepository;
@@ -39,6 +40,22 @@ public class UserService {
     }
     public UserInfoResponseDTO getProfile(Long userId) {
         User user =  userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        return new UserInfoResponseDTO(user);
+    }
+
+    public UserInfoResponseDTO login(UserLoginRequestDTO requestDTO) {
+        String username = requestDTO.getUsername();
+        String password = requestDTO.getPassword();
+
+        // 저장된 회원이 없을 때
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UserNotFoundException();
+        }
+
+        // 로그인 성공시 UserInfoResponseDTO로 변환하여 반환
         return new UserInfoResponseDTO(user);
     }
 }
