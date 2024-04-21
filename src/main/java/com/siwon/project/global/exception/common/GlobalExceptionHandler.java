@@ -1,4 +1,4 @@
-package com.siwon.project.global.common;
+package com.siwon.project.global.exception.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

@@ -1,4 +1,4 @@
-package com.siwon.project.global.common;
+package com.siwon.project.global.exception.common;
 
 import lombok.Builder;
 import lombok.Getter;
