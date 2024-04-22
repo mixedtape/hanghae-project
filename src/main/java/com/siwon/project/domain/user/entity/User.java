@@ -40,6 +40,7 @@ public class User extends BaseTimeEntity {
 
     private LocalDateTime deletedAt;
 
+
     @Column
     private String emailVerificationCode;
 

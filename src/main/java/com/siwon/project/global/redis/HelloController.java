@@ -1,4 +1,4 @@
-package com.siwon.project;
+package com.siwon.project.global.redis;
 
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;

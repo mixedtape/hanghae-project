@@ -15,7 +15,10 @@ public enum ErrorCode {
     //user
     NOT_FOUND_USER_EXCEPTION(400, "해당 유저가 존재하지 않습니다"),
     PASSWORD_CONFIRMATION_EXCEPTION(401, "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
-    PASSWORD_MISMATCH_EXCEPTION(401, "비밀번호가 일치하지 않습니다.");
+    PASSWORD_MISMATCH_EXCEPTION(401, "비밀번호가 일치하지 않습니다."),
+    //email
+    EMAIL_SERVICE_EXCEPTION(401,"이메일 발송에 실패 하였 습니다"),
+    INVALID_EMAIL_CODE_EXCEPTION(401,"이메일 인증 코드가 틀립 니다.");
     private final int statusCode;
 
     private final String message;
