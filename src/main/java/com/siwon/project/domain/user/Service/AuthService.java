@@ -10,6 +10,7 @@ import com.siwon.project.global.exception.jwt.RefreshTokenNotFoundException;
 import com.siwon.project.global.exception.jwt.RevokedRefreshTokenException;
 import com.siwon.project.global.exception.user.UserNotFoundException;
 import com.siwon.project.global.jwt.JwtUtil;
+import com.siwon.project.global.redis.RedisUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,15 @@ public class AuthService {
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
+
 
     @Autowired
-    public AuthService(TokenRepository tokenRepository, UserRepository userRepository, JwtUtil jwtUtil) {
+    public AuthService(TokenRepository tokenRepository, UserRepository userRepository, JwtUtil jwtUtil ,RedisUtil redisUtil) {
         this.tokenRepository = tokenRepository;
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
+        this.redisUtil = redisUtil;
     }
 
     @Transactional
@@ -49,7 +53,7 @@ public class AuthService {
                 .revoked(false)
                 .build();
 
-        tokenRepository.save(tokenEntity);
+        redisUtil.setDataExpire(user.getUsername(),refreshToken,60*5L);
 
         return "Bearer " + refreshToken;
     }
