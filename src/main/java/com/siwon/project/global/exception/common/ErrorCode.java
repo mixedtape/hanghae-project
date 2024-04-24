@@ -18,6 +18,7 @@ public enum ErrorCode {
     PASSWORD_MISMATCH_EXCEPTION(401, "비밀번호가 일치하지 않습니다."),
     ALREADY_EXIST_USERNAME_EXCEPTION(401, "중복된 유저네임입니다."),
     ALREADY_EXIST_EMAIL_EXCEPTION(401, "중복된 이메일입니다."),
+    AUTHENTICATION_MISMATCH_EXCEPTION(401, "권한이 없습니다."),
     //email
     EMAIL_SERVICE_EXCEPTION(401,"이메일 발송에 실패 하였 습니다"),
     INVALID_EMAIL_CODE_EXCEPTION(401,"이메일 인증 코드가 틀립 니다.");

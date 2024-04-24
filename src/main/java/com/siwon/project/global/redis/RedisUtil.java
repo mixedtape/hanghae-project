@@ -1,5 +1,6 @@
 package com.siwon.project.global.redis;
 
+import com.siwon.project.domain.user.entity.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -25,6 +26,19 @@ public class RedisUtil {
         Duration expireDuration=Duration.ofSeconds(duration);
         valueOperations.set(key,value,expireDuration);
     }
+    public void setToken(String key, String refreshtoken){//지정된 키(key)에 값을 저장하고, 지정된 시간(duration) 후에 데이터가 만료되도록 설정하는 메서드
+        ValueOperations<String,String> valueOperations=redisTemplate.opsForValue();
+        valueOperations.set(key,refreshtoken);
+    }
+    public String getToken(String username) {
+        return redisTemplate.opsForValue().get(username);
+    }
+
+    // 리프레시 토큰이 존재하는지 여부를 확인하는 메서드
+    public boolean isTokenExists(String username) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(username));
+    }
+
     public void deleteData(String key){//지정된 키(key)에 해당하는 데이터를 Redis에서 삭제하는 메서드
         redisTemplate.delete(key);
     }

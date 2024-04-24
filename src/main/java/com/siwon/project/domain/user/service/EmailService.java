@@ -1,4 +1,4 @@
-package com.siwon.project.domain.user.Service;
+package com.siwon.project.domain.user.service;
 
 import com.siwon.project.global.exception.user.EmailServiceException;
 import com.siwon.project.global.redis.RedisUtil;
