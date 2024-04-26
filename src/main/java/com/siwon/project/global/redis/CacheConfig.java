@@ -1,4 +1,4 @@
-package com.siwon.project;
+package com.siwon.project.global.redis;
 
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.cache.annotation.EnableCaching;

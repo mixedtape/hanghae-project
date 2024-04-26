@@ -1,16 +1,15 @@
-package com.siwon.project.domain.user.Service;
+package com.siwon.project.domain.user.service;
 
 
-import com.siwon.project.domain.user.entity.Token;
 import com.siwon.project.domain.user.entity.User;
-import com.siwon.project.domain.user.repository.TokenRepository;
 import com.siwon.project.domain.user.repository.UserRepository;
 import com.siwon.project.global.exception.jwt.ExpiredRefreshTokenException;
-import com.siwon.project.global.exception.jwt.RefreshTokenNotFoundException;
 import com.siwon.project.global.exception.jwt.RevokedRefreshTokenException;
 import com.siwon.project.global.exception.user.UserNotFoundException;
 import com.siwon.project.global.jwt.JwtUtil;
+import com.siwon.project.global.redis.RedisUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,18 +17,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthService {
 
-    private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
+
 
     @Autowired
-    public AuthService(TokenRepository tokenRepository, UserRepository userRepository, JwtUtil jwtUtil) {
-        this.tokenRepository = tokenRepository;
+    public AuthService(UserRepository userRepository, JwtUtil jwtUtil, RedisUtil redisUtil) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
+        this.redisUtil = redisUtil;
     }
 
-    @Transactional
+
     public String createRefreshToken(Long userId) {
 
         // DB에서 User 객체를 조회
@@ -40,46 +40,30 @@ public class AuthService {
         long TOKEN_VALIDITY = 7 * 24 * 60 * 60 * 1000L;
 
         // JwtUtil 클래스의 메서드를 호출하여 리프레시 토큰을 생성
-        String refreshToken = jwtUtil.createToken(user.getUsername(), TOKEN_VALIDITY);
+        String refreshToken = jwtUtil.createRefreshToken(user.getUsername(), TOKEN_VALIDITY);
 
-        Token tokenEntity = Token.builder()
-                .refreshToken(refreshToken)
-                .user(user)
-                .expired(false)
-                .revoked(false)
-                .build();
-
-        tokenRepository.save(tokenEntity);
+        redisUtil.setToken(user.getUsername(), refreshToken);
 
         return "Bearer " + refreshToken;
     }
 
-    @Transactional
-    public String createAccessTokenWithRefreshToken(String refreshToken) {
 
-        System.out.println(refreshToken);
-
-        // 데이터베이스에서 리프레시 토큰 조회
-        Token tokenEntity = tokenRepository.findByRefreshToken(refreshToken);
-
-        if (tokenEntity == null) {
-            throw new RefreshTokenNotFoundException();
-        }
+    public String createAccessTokenWithRefreshToken(String refreshToken, String userName) {
 
         try {
             // 리프레시 토큰을 검증
             jwtUtil.validationToken(refreshToken);
 
             // 리프레시 토큰이 사용 중지되었다면 예외를 발생
-            if (tokenEntity.isRevoked()) {
+            if (!redisUtil.isTokenExists(userName)) {
                 throw new RevokedRefreshTokenException();
             }
+            String storedRefreshToken = redisUtil.getData(userName);
+            if(!Objects.equals(storedRefreshToken, refreshToken)){
 
-            // 액세스 토큰의 유효시간을 1시간으로 설정
-            long TOKEN_VALIDITY = 60 * 60 * 1000L;
-
-            // 새로운 액세스 토큰을 생성하고 반환
-            return jwtUtil.createToken(tokenEntity.getUser().getUsername(), TOKEN_VALIDITY);
+                throw new RevokedRefreshTokenException();
+            }
+            return jwtUtil.createToken(userName);
 
         } catch (ExpiredJwtException e) {
             // 리프레시 토큰이 만료되었다면 예외를 발생

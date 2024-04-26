@@ -18,5 +18,9 @@ public class UserSignupRequestDTO {
     @Pattern(regexp = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+(\\.[a-zA-Z]{2,})+$",
             message = "올바른 이메일 형식이 아닙니다. 문자(대문자/소문자)@도메인으로 입력해주세요.")
     private String email;
+    @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$",
+            message = "올바른 전화번호 형식이 아닙니다. xxx-xxxx-xxxx 또는 xxx-xxx-xxxx 형식으로 입력해주세요.")
+    private String phoneNum;
 
+    private String address;
 }

@@ -1,4 +1,4 @@
-package com.siwon.project;
+package com.siwon.project.global.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

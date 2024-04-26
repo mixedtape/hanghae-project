@@ -1,5 +1,6 @@
 package com.siwon.project.domain.user.entity;
 
+import com.siwon.project.domain.user.dto.UpdateUserProfileRequestDTO;
 import com.siwon.project.global.auditing.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,6 +32,8 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
+    private String phoneNum;
 
     @Column(nullable = false)
     private boolean emailVerified = false;
@@ -40,14 +43,33 @@ public class User extends BaseTimeEntity {
 
     private LocalDateTime deletedAt;
 
+    @Column(nullable = false)
+    private String address;
+
+
     @Column
     private String emailVerificationCode;
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, String address, String phoneNum) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.address = address;
+        this.phoneNum = phoneNum;
     }
+
+    public void updateProfile(UpdateUserProfileRequestDTO requestDTO) {
+        this.address = requestDTO.getAddress();
+        this.phoneNum = requestDTO.getPhoneNum();
+    }
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
+    public void deleteUser(){
+        this.is_deleted=true;
+    }
+
 
 
 }

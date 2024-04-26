@@ -97,7 +97,7 @@ public class JwtUtil {
                         .compact();
     }
 
-    public String createToken(String username, long validityInMillis) {
+    public String createRefreshToken(String username, long validityInMillis) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + validityInMillis);
 
