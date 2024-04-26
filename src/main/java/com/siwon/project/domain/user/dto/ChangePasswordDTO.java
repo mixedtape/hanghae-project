@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class ChangePasswordDTO {
 
     @Pattern(regexp = "^[a-zA-Z0-9]{4,}$",

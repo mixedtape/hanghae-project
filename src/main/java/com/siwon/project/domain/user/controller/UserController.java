@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,7 @@ public class UserController {
     private final AuthService authService;
     private final EmailService mailService;
 
-    @PostMapping("/signup")
+    @PostMapping
     public ResponseEntity<CommonResponse<Void>> signup(
             @Valid @RequestBody UserSignupRequestDTO requestDTO) {
 
@@ -132,5 +133,12 @@ public class UserController {
         String newAccessToken = authService.createAccessTokenWithRefreshToken(refreshTokenDTO.getRefreshToken(),userDetails.getUsername());
 
         return ResponseEntity.ok().body(CommonResponse.of("액세스 토큰 갱신 성공", newAccessToken));
+    }
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<CommonResponse<Void>> deleteUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        userService.deleteUser(userDetails.getUser().getId());
+        return ResponseEntity.ok().body(CommonResponse.of("유저 삭제 성공",null));
     }
 }

@@ -10,10 +10,12 @@ import com.siwon.project.domain.user.repository.UserRepository;
 import com.siwon.project.global.exception.user.AlreadyExistEmailException;
 import com.siwon.project.global.exception.user.AlreadyExistUsernameException;
 import com.siwon.project.global.exception.user.AuthenticationMismatchException;
+import com.siwon.project.global.exception.user.InvalidPasswordException;
 import com.siwon.project.global.exception.user.PasswordConfirmationException;
 import com.siwon.project.global.exception.user.UserNotFoundException;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,7 +97,7 @@ public class UserService {
             throw new AuthenticationMismatchException();
         }
         if (!passwordEncoder.matches(changePasswordDTO.getPassword(), user.getPassword())) {
-            throw new UserNotFoundException();
+            throw new InvalidPasswordException();
         }
     }
 
@@ -107,6 +109,11 @@ public class UserService {
         }
         String encodePassword = passwordEncoder.encode(changePasswordDTO.getPassword());
         user.changePassword(encodePassword);
+    }
+    @Transactional
+    public void deleteUser(Long userId) {
+      User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+      user.deleteUser();
     }
 
     public User getUser(Long userId) {
